@@ -16,9 +16,9 @@ def index(request) -> HttpResponse:
     request.session["num_visits"] = num_visits + 1
 
     context = {
-        "num_drivers": num_workers,
-        "num_cars": num_tasks,
+        "num_workers": num_workers,
+        "num_tasks": num_tasks,
         "num_visits": num_visits + 1,
     }
 
-    return render(request, "task_manager/index.html", context=context)
+    return render(request, "pages/index.html", context=context)
