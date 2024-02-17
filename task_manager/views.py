@@ -5,7 +5,6 @@ from django.shortcuts import render
 from task_manager.models import Worker, Task
 
 
-@login_required
 def index(request) -> HttpResponse:
     """View function for the home page of the site."""
 
