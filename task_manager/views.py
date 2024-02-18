@@ -61,7 +61,11 @@ class PositionCreateView(LoginRequiredMixin, generic.CreateView):
 
 
 class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
-    pass
+    model = Position
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:position-list")
+
 
 class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
-    pass
+    model = Position
+    success_url = reverse_lazy("task_manager:position-list")
