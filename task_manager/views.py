@@ -1,8 +1,13 @@
+from typing import Any
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views import generic
 
-from task_manager.models import Worker, Task
+from task_manager.forms import PositionSearchForm
+from task_manager.models import Worker, Task, Position, TaskType
 
 
 def index(request) -> HttpResponse:
@@ -21,3 +26,20 @@ def index(request) -> HttpResponse:
     }
 
     return render(request, "pages/index.html", context=context)
+
+
+class PositionListView(LoginRequiredMixin, generic.ListView):
+    model = Position
+    context_object_name = "position_list"
+    template_name = "pages/position_list.html"
+    paginate_by = 5
+
+    def get_context_data(
+            self, *, object_list=None, **kwargs
+    ) -> dict[str, Any]:
+        context = super(PositionListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = PositionSearchForm(
+            initial={"name": name}
+        )
+        return context

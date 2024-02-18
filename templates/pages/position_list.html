@@ -1,0 +1,41 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+  <div class="card">
+    <div class="table-responsive">
+      {% if manufacturer_list %}
+      <table class="table align-items-center mb-0">
+        <thead>
+          <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for position in position_list %}
+          <tr>
+            <td>
+              <div class="d-flex px-2">
+                <div>
+                  <img src="https://demos.creative-tim.com/soft-ui-design-system-pro/assets/img/logos/small-logos/logo-spotify.svg" class="avatar avatar-sm rounded-circle me-2">
+                </div>
+                <div class="my-auto">
+                  <h6 class="mb-0 text-xs">{{ position }}</h6>
+                </div>
+              </div>
+            </td>
+            <td class="align-middle">
+              <button class="btn btn-link text-secondary mb-0">
+                <i class="fa fa-ellipsis-v text-xs" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+      {% else %}
+        <p>There are no position in the service.</p>
+      {% endif %}
+    </div>
+    </div>
+{% endblock %}
