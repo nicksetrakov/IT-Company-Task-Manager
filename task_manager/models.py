@@ -58,7 +58,7 @@ class Task(models.Model):
     assignees = models.ManyToManyField(Worker, related_name="tasks")
 
     def clean(self) -> None:
-        if self.deadline < timezone.now():
+        if self.deadline and self.deadline < timezone.now():
             raise ValidationError("The deadline cannot be in the past.")
 
     def save(self,
