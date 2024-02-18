@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 
 from task_manager.forms import PositionSearchForm
@@ -25,13 +26,12 @@ def index(request) -> HttpResponse:
         "num_visits": num_visits + 1,
     }
 
-    return render(request, "pages/index.html", context=context)
+    return render(request, "task_manager/index.html", context=context)
 
 
 class PositionListView(LoginRequiredMixin, generic.ListView):
     model = Position
     context_object_name = "position_list"
-    template_name = "pages/position_list.html"
     paginate_by = 5
 
     def get_context_data(
@@ -43,3 +43,16 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
             initial={"name": name}
         )
         return context
+
+
+class PositionCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Position
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:position-list")
+
+
+class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
+    pass
+
+class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
+    pass
