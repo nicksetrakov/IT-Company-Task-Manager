@@ -69,3 +69,45 @@ class PositionUpdateView(LoginRequiredMixin, generic.UpdateView):
 class PositionDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Position
     success_url = reverse_lazy("task_manager:position-list")
+
+
+class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+    model = TaskType
+    context_object_name = "task_type_list"
+    paginate_by = 5
+
+    def get_context_data(
+            self, *, object_list=None, **kwargs
+    ) -> dict[str, Any]:
+        context = super(TaskTypeListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = PositionSearchForm(
+            initial={"name": name}
+        )
+        return context
+
+    def get_queryset(self) -> Any:
+        queryset = TaskType.objects.all()
+        form = PositionSearchForm(self.request.GET)
+        if form.is_valid():
+            queryset = queryset.filter(
+                name__icontains=form.cleaned_data["name"]
+            )
+        return queryset
+
+
+class TaskTypeCreateView(LoginRequiredMixin, generic.CreateView):
+    model = TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:task-type-list")
+
+
+class TaskTypeUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:task-type-list")
+
+
+class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = TaskType
+    success_url = reverse_lazy("task_manager:task-type-list")
