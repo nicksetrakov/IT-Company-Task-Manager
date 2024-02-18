@@ -4,6 +4,7 @@
     <h1 class="mb-0">Positions</h1>
     <a href="{% url 'task_manager:position-create' %}" class="btn btn-primary btn-lg link-to-page">Create Position</a>
   </div>
+  {% include "includes/search_form.html" %}
   <div class="card">
     <div class="table-responsive">
       {% if position_list %}

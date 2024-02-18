@@ -44,6 +44,15 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
         )
         return context
 
+    def get_queryset(self) -> Any:
+        queryset = Position.objects.all()
+        form = PositionSearchForm(self.request.GET)
+        if form.is_valid():
+            queryset = queryset.filter(
+                name__icontains=form.cleaned_data["name"]
+            )
+        return queryset
+
 
 class PositionCreateView(LoginRequiredMixin, generic.CreateView):
     model = Position
