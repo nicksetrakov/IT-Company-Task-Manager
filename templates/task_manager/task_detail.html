@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+{% block content %}
+<section class="py-9">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <h3 class="text-gradient text-primary mb-0 mt-2">{{ task.name }}</h3>
+        <h3>{{ task.task_type }}</h3>
+        <p>{{ task.description }}</p>
+      </div>
+      <div class="col-lg-6 mt-lg-0 mt-5 ps-lg-0 ps-0">
+        <div class="p-3 info-horizontal">
+          <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
+            <i class="fas fa-ship opacity-10"></i>
+          </div>
+          <div class="description ps-3">
+            <p class="mb-0">Priority: {{ task.priority }}</p>
+          </div>
+        </div>
+
+        <div class="p-3 info-horizontal">
+          <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
+            <i class="fas fa-handshake opacity-10"></i>
+          </div>
+          <div class="description ps-3">
+            <p class="mb-0">Assignees:
+              {% for worker in task.assignees.all %}
+                {{ worker.username }} {% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </p>
+          </div>
+        </div>
+        <div class="p-3 info-horizontal">
+          <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
+            <i class="fas fa-hourglass opacity-10"></i>
+          </div>
+          <div class="description ps-3">
+            <p class="mb-0">Deadline: {{ task.deadline }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
