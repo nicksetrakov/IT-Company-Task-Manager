@@ -9,7 +9,7 @@
     {% for task in task_list %}
       <div class="card">
         <div class="card-body pt-2">
-          <a href="javascript:;" class="card-title h5 d-block text-darker">
+          <a href="{{ task.get_absolute_url }}" class="card-title h5 d-block text-darker">
             {{ task.name }}
           </a>
           <p class="card-description mb-4">
