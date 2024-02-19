@@ -8,6 +8,7 @@
         <h3>{{ task.task_type }}</h3>
         <p>{{ task.description }}</p>
       </div>
+
       <div class="col-lg-6 mt-lg-0 mt-5 ps-lg-0 ps-0">
         <div class="p-3 info-horizontal">
           <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
@@ -36,6 +37,11 @@
           </div>
           <div class="description ps-3">
             <p class="mb-0">Deadline: {{ task.deadline }}</p>
+            {% if task.is_completed %}
+              <p>Task has done</p>
+            {% else %}
+              <p>Task has not done</p>
+            {% endif %}
           </div>
         </div>
       </div>
