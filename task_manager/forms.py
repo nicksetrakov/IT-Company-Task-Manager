@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 
 from task_manager.models import Worker, Position, TaskType, Task
@@ -56,7 +56,7 @@ class TaskForm(forms.ModelForm):
         ]
 
 
-class WorkerForm(UserCreationForm):
+class WorkerCreateForm(UserCreationForm):
     position = forms.ModelChoiceField(
         queryset=Position.objects.all(),
         widget=forms.Select,
@@ -77,4 +77,18 @@ class WorkerForm(UserCreationForm):
             "position",
             "first_name",
             "last_name",
+        )
+
+
+class WorkerPositionUpdateForm(forms.ModelForm):
+    position = forms.ModelChoiceField(
+        queryset=Position.objects.all(),
+        widget=forms.Select,
+        required=False
+    )
+
+    class Meta(UserChangeForm.Meta):
+        model = Worker
+        fields = (
+            "position",
         )
