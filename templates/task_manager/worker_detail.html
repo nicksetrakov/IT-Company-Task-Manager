@@ -8,7 +8,7 @@
     </a>
 
     <a href="{% url 'task_manager:worker-update' pk=worker.id %}" class="btn btn-secondary link-to-page">
-      Update
+      Update Position
     </a>
   </h1>
 
@@ -19,24 +19,19 @@
 
   <div class="ml-3">
     <h4>Tasks</h4>
-
-    {% for task in worker.tasks.all %}
         <hr>
+    {% if completed or not_completed %}
         <p>
           <strong>Completed:</strong>
-          {% if task.is_completed %}
-            {{ task.name }} {% if not forloop.last %}, {% endif %}
-          {% endif %}
+          {{ completed|join:", " }}
         </p>
         <p>
           <strong>Not Completed:</strong>
-          {% if not task.is_completed %}
-            {{ task.name }} {% if not forloop.last %}, {% endif %}
-          {% endif %}
+          {{ not_completed|join:", " }}
         </p>
 
-    {% empty %}
+    {% else %}
       <p>No task for this worker</p>
-    {% endfor %}
+    {% endif %}
   </div>
 {% endblock %}

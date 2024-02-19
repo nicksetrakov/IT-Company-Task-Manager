@@ -209,6 +209,12 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
 class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
     model = Worker
 
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["completed"] = [task.name for task in self.object.tasks.all() if task.is_completed]
+        context["not_completed"] = [task.name for task in self.object.tasks.all() if not task.is_completed]
+        return context
+
     def get_queryset(self) -> Any:
         return super().get_queryset().select_related('position').prefetch_related('tasks')
 
