@@ -159,6 +159,9 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
         context['assignees'] = self.object.assignees.all()
         return context
 
+    def get_queryset(self) -> Any:
+        return super().get_queryset().select_related('task_type').prefetch_related('assignees')
+
 
 class TaskCompleteView(LoginRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
