@@ -13,7 +13,7 @@
             {{ task.name }}
           </a>
           <p class="card-description mb-4">
-            {{ task.description }}
+            {{ task.description|truncatechars:100 }}
           </p>
           <div class="author align-items-center">
             <div class="name ps-3">
