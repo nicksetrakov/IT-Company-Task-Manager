@@ -19,6 +19,19 @@ class SearchForm(forms.Form):
     )
 
 
+class WorkerSearchForm(forms.Form):
+    username = forms.CharField(
+        max_length=63,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by username"
+            }
+        )
+    )
+
+
 class TaskForm(forms.ModelForm):
     priority = forms.ChoiceField(
         choices=Task.PRIORITY_CHOICES,
@@ -36,6 +49,7 @@ class TaskForm(forms.ModelForm):
         widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
         input_formats=['%Y-%m-%dT%H:%M']
     )
+
     class Meta:
         model = Task
         fields = ['name', 'description', 'deadline', 'priority', 'task_type', 'assignees']

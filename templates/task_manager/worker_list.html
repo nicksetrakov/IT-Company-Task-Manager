@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Workers</h1>
+    <a href="{% url 'task_manager:worker-create' %}" class="btn btn-primary btn-lg link-to-page">Create Worker</a>
+  </div>
+  {% include "includes/search_form.html" %}
+  <div class="card">
+    <div class="table-responsive">
+      {% if worker_list %}
+      <table class="table align-items-center mb-0">
+        <thead>
+          <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">First name</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last name</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Position</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for worker in worker_list %}
+          <tr>
+            <td>
+              <div class="d-flex px-2">
+                <div class="my-auto">
+                  <a href="{{ worker.get_absolute.url }}">
+                    <h6 class="mb-0 text-xs">{{ worker.username }}{% if user == worker %} (Me) {% endif %}</h6>
+                  </a>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex px-2">
+                <div class="my-auto">
+                  <h6 class="mb-0 text-xs">{{ worker.first_name }}</h6>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex px-2">
+                <div class="my-auto">
+                  <h6 class="mb-0 text-xs">{{ worker.last_name }}</h6>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex px-2">
+                <div class="my-auto">
+                  <h6 class="mb-0 text-xs">{{ worker.position }}</h6>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+      {% else %}
+        <p>There are no position in the service.</p>
+      {% endif %}
+    </div>
+    </div>
+{% endblock %}
