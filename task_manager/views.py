@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -153,6 +153,22 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     model = Task
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['assignees'] = self.object.assignees.all()
+        return context
+
+
+class TaskCompleteView(LoginRequiredMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        task = Task.objects.get(pk=self.kwargs['pk'])
+        if task.is_completed:
+            task.is_completed = False
+        else:
+            task.is_completed = True
+        task.save()
+        return redirect('task_manager:task-detail', pk=task.pk)
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):

@@ -14,6 +14,16 @@
         <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-gradient-secondary link-to-page">
           Update
         </a>
+        {% if user in assignees %}
+          <form action="{% url 'task_manager:task-complete' pk=task.id %}" method="post">
+            {% csrf_token %}
+            {% if not task.is_completed %}
+              <button type="submit" class="btn bg-gradient-success">Complete Task</button>
+            {% else %}
+              <button type="submit" class="btn bg-gradient-warning">Incomplete Task</button>
+            {% endif %}
+          </form>
+        {% endif %}
       </div>
 
       <div class="col-lg-6 mt-lg-0 mt-5 ps-lg-0 ps-0">
@@ -32,7 +42,7 @@
           </div>
           <div class="description ps-3">
             <p class="mb-0">Assignees:
-              {% for worker in task.assignees.all %}
+              {% for worker in assignees %}
                 {{ worker.username }} {% if not forloop.last %}, {% endif %}
               {% endfor %}
             </p>
