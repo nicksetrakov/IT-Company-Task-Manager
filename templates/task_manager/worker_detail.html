@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+  <h1>
+    Username: {{ worker.username }}
+    <a href="{% url 'task_manager:worker-delete' pk=worker.id %}" class="btn btn-danger link-to-page">
+      Delete
+    </a>
+
+    <a href="{% url 'task_manager:worker-update' pk=worker.id %}" class="btn btn-secondary link-to-page">
+      Update
+    </a>
+  </h1>
+
+  <p><strong>First name:</strong> {{ worker.first_name }}</p>
+  <p><strong>Last name:</strong> {{ worker.last_name }}</p>
+  <p><strong>Position:</strong> {{ worker.position }}</p>
+  <p><strong>Is staff:</strong> {{ worker.is_staff }}</p>
+
+  <div class="ml-3">
+    <h4>Tasks</h4>
+
+    {% for task in worker.tasks.all %}
+        <hr>
+        <p>
+          <strong>Completed:</strong>
+          {% if task.is_completed %}
+            {{ task.name }} {% if not forloop.last %}, {% endif %}
+          {% endif %}
+        </p>
+        <p>
+          <strong>Not Completed:</strong>
+          {% if not task.is_completed %}
+            {{ task.name }} {% if not forloop.last %}, {% endif %}
+          {% endif %}
+        </p>
+
+    {% empty %}
+      <p>No task for this worker</p>
+    {% endfor %}
+  </div>
+{% endblock %}
