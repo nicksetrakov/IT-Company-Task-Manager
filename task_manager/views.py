@@ -1,14 +1,16 @@
 from typing import Any
 
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
 from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerCreateForm, \
-    WorkerPositionUpdateForm
+    WorkerPositionUpdateForm, RegistrationForm, UserLoginForm
 from task_manager.models import Worker, Task, Position, TaskType
 
 
@@ -235,3 +237,29 @@ class WorkerPositionUpdateView(LoginRequiredMixin, generic.UpdateView):
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Worker
     success_url = reverse_lazy("task_manager:worker-list")
+
+
+def register(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect | HttpResponse:
+    if request.method == 'POST':
+        form = WorkerCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            print("Account created successfully!")
+            return redirect('/accounts/login')
+        else:
+            print("Registration failed!")
+    else:
+        form = WorkerCreateForm()
+
+    context = {'form': form}
+    return render(request, 'accounts/sign-up.html', context)
+
+
+class UserLoginView(LoginView):
+    template_name = 'accounts/sign-in.html'
+    form_class = UserLoginForm
+
+
+def logout_view(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
+    logout(request)
+    return redirect('/accounts/login')
