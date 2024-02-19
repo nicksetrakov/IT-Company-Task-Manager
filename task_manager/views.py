@@ -2,7 +2,7 @@ from typing import Any
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -164,7 +164,9 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class TaskCompleteView(LoginRequiredMixin, generic.View):
-    def post(self, request, *args, **kwargs):
+    def post(
+            self, request, *args, **kwargs
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         task = Task.objects.get(pk=self.kwargs['pk'])
         if task.is_completed:
             task.is_completed = False
@@ -194,10 +196,33 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Worker.objects.all()
+        queryset = Worker.objects.all().select_related('position')
         form = WorkerSearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
                 username__icontains=form.cleaned_data["username"]
             )
         return queryset
+
+
+class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Worker
+
+    def get_queryset(self) -> Any:
+        return super().get_queryset().select_related('position').prefetch_related('tasks')
+
+
+class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Worker
+
+
+class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Worker
+
+    def get_success_url(self) -> Any:
+        return reverse_lazy("task_manager:worker-detail", kwargs={'pk': self.object.pk})
+
+
+class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Worker
+    success_url = reverse_lazy("task_manager:worker-list")
