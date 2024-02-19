@@ -11,11 +11,7 @@ class SearchForm(forms.Form):
         max_length=63,
         required=False,
         label="",
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "Search by name"
-            }
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Search by name"}),
     )
 
 
@@ -24,33 +20,61 @@ class WorkerSearchForm(forms.Form):
         max_length=63,
         required=False,
         label="",
-        widget=forms.TextInput(
-            attrs={
-                "placeholder": "Search by username"
-            }
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Search by username"}),
     )
 
 
 class TaskForm(forms.ModelForm):
     priority = forms.ChoiceField(
         choices=Task.PRIORITY_CHOICES,
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'})
+        widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
     )
     task_type = forms.ModelChoiceField(
         queryset=TaskType.objects.all(),
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'})
+        widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
     )
     assignees = forms.ModelMultipleChoiceField(
         queryset=get_user_model().objects.all(),
         widget=forms.CheckboxSelectMultiple,
     )
     deadline = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
-        input_formats=['%Y-%m-%dT%H:%M']
+        widget=forms.DateTimeInput(
+            attrs={"class": "form-control", "type": "datetime-local"}
+        ),
+        input_formats=["%Y-%m-%dT%H:%M"],
     )
 
     class Meta:
         model = Task
-        fields = ['name', 'description', 'deadline', 'priority', 'task_type', 'assignees']
+        fields = [
+            "name",
+            "description",
+            "deadline",
+            "priority",
+            "task_type",
+            "assignees",
+        ]
 
+
+class WorkerForm(UserCreationForm):
+    position = forms.ModelChoiceField(
+        queryset=Position.objects.all(),
+        widget=forms.Select,
+        required=False
+    )
+    field_order = [
+        "username",
+        "password1",
+        "password2",
+        "first_name",
+        "last_name",
+        "position"
+    ]
+
+    class Meta(UserCreationForm.Meta):
+        model = Worker
+        fields = UserCreationForm.Meta.fields + (
+            "position",
+            "first_name",
+            "last_name",
+        )

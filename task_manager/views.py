@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm
+from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerForm
 from task_manager.models import Worker, Task, Position, TaskType
 
 
@@ -214,6 +214,7 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
+    form_class = WorkerForm
 
 
 class WorkerUpdateView(LoginRequiredMixin, generic.UpdateView):
