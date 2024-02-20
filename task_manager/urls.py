@@ -15,6 +15,11 @@ urlpatterns = [
     path("tasks/", views.TaskListView.as_view(), name="task-list"),
     path("tasks/create/", views.TaskCreateView.as_view(), name="task-create"),
     path("tasks/<int:pk>/", views.TaskDetailView.as_view(), name="task-detail"),
+    path(
+        "tasks/<int:pk>/toggle-assign/",
+        views.toggle_assign_to_task,
+        name="toggle-task-assign",
+    ),
     path("tasks/<int:pk>/update", views.TaskUpdateView.as_view(), name="task-update"),
     path("tasks/<int:pk>/delete", views.TaskDeleteView.as_view(), name="task-delete"),
     path('tasks/<int:pk>/complete/', views.TaskCompleteView.as_view(), name="task-complete"),

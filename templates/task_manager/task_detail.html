@@ -46,6 +46,18 @@
                 {{ worker.username }} {% if not forloop.last %}, {% endif %}
               {% endfor %}
             </p>
+            <p>
+              {% if user in assignees %}
+                <a href="{% url 'task_manager:toggle-task-assign' pk=task.id %}" class="btn btn-danger link-to-page">
+                  Delete me from this task
+                </a>
+              {% else %}
+                <a href="{% url 'task_manager:toggle-task-assign' pk=task.id %}" class="btn btn-success link-to-page">
+                  Assign me to this task
+                </a>
+              {% endif %}
+
+            </p>
           </div>
         </div>
         <div class="p-3 info-horizontal">
