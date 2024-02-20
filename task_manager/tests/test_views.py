@@ -5,11 +5,12 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from task_manager.models import Worker, Position, TaskType, Task
+from task_manager.models import Worker, Position, TaskType, Task, Tag
 
 POSITION_URL = reverse("task_manager:position-list")
 TASK_URL = reverse("task_manager:task-list")
 WORKER_URL = reverse("task_manager:worker-list")
+TAG_URL = reverse("task_manager:tag-list")
 
 
 class PublicPositionTest(TestCase):
@@ -92,3 +93,28 @@ class PrivateWorkerTest(TestCase):
         worker = Worker.objects.all()
         self.assertEqual(list(res.context["worker_list"]), list(worker))
         self.assertTemplateUsed(res, "task_manager/worker_list.html")
+
+
+class PublicTagTest(TestCase):
+    def test_login_required(self):
+        res = self.client.get(TAG_URL)
+        self.assertNotEquals(res.status_code, 200)
+
+
+class PrivateTagTest(TestCase):
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create_user(
+            username="test",
+            password="passw12345",
+        )
+        self.client.force_login(self.user)
+
+    def test_retrieve_position(self):
+        Tag.objects.create(name="test")
+        res = self.client.get(TAG_URL)
+        self.assertEqual(res.status_code, 200)
+        tags = Tag.objects.all()
+        self.assertEqual(
+            list(res.context["tag_list"]), list(tags)
+        )
+        self.assertTemplateUsed(res, "task_manager/tag_list.html")

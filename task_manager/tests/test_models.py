@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from task_manager.models import Worker, Task, TaskType, Position
+from task_manager.models import Worker, Task, TaskType, Position, Tag
 
 
 class ModelsTests(TestCase):
@@ -93,4 +93,10 @@ class ModelsTests(TestCase):
             is_completed=False,
             priority="High",
             task_type=TaskType.objects.create(name="Test Task Type")
+        )
+
+    def test_tag_str(self):
+        tag = Tag.objects.create(name="test")
+        self.assertEquals(
+            str(tag), f"{tag.name}"
         )
