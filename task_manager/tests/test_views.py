@@ -32,9 +32,7 @@ class PrivatePositionTest(TestCase):
         res = self.client.get(POSITION_URL)
         self.assertEqual(res.status_code, 200)
         positions = Position.objects.all()
-        self.assertEqual(
-            list(res.context["position_list"]), list(positions)
-        )
+        self.assertEqual(list(res.context["position_list"]), list(positions))
         self.assertTemplateUsed(res, "task_manager/position_list.html")
 
 
@@ -53,9 +51,7 @@ class PrivateTaskTest(TestCase):
         self.client.force_login(self.user)
 
     def test_retrieve_task(self):
-        position = Position.objects.create(
-            name="test"
-        )
+        position = Position.objects.create(name="test")
         task_type = TaskType.objects.create(name="Bug")
         worker = Worker.objects.create(position=position)
         task = Task.objects.create(
@@ -64,7 +60,7 @@ class PrivateTaskTest(TestCase):
             deadline=timezone.now() + timedelta(days=1),
             is_completed=False,
             priority="High",
-            task_type=task_type
+            task_type=task_type,
         )
 
         task.assignees.add(worker)
@@ -114,7 +110,5 @@ class PrivateTagTest(TestCase):
         res = self.client.get(TAG_URL)
         self.assertEqual(res.status_code, 200)
         tags = Tag.objects.all()
-        self.assertEqual(
-            list(res.context["tag_list"]), list(tags)
-        )
+        self.assertEqual(list(res.context["tag_list"]), list(tags))
         self.assertTemplateUsed(res, "task_manager/tag_list.html")

@@ -54,4 +54,3 @@ class WorkerSearchFormTestCase(TestCase):
         data = {"username": "test"}
         form = WorkerSearchForm(data=data)
         self.assertTrue(form.is_valid)
-

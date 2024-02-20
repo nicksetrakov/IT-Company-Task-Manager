@@ -28,7 +28,9 @@ class Tag(models.Model):
 
 
 class Worker(AbstractUser):
-    position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True, blank=True)
+    position = models.ForeignKey(
+        Position, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "worker"
@@ -72,14 +74,17 @@ class Task(models.Model):
         if self.deadline and self.deadline < timezone.now():
             raise ValidationError("The deadline cannot be in the past.")
 
-    def save(self,
-             force_insert: bool = False,
-             force_update: bool = False,
-             using: Any | None = None,
-             update_fields: Any | None = None) -> None:
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Any | None = None,
+        update_fields: Any | None = None,
+    ) -> None:
         self.full_clean()
-        return super(Task, self) \
-            .save(force_insert, force_update, using, update_fields)
+        return super(Task, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     def __str__(self) -> str:
         return f"{self.name} {self.deadline} {self.priority}"

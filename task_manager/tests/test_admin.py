@@ -9,15 +9,12 @@ class AdminSiteTests(TestCase):
     def setUp(self) -> None:
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
-            username="admin",
-            password="admin"
+            username="admin", password="admin"
         )
         self.client.force_login(self.admin_user)
         position = Position.objects.create(name="Developer")
         self.worker = get_user_model().objects.create_user(
-            username="worker",
-            password="worker12345",
-            position=position
+            username="worker", password="worker12345", position=position
         )
 
     def test_worker_position_listed(self):
@@ -33,7 +30,10 @@ class AdminSiteTests(TestCase):
         """
         Test that worker's position is on worker detail admin page
         """
-        url = reverse("admin:task_manager_worker_change", args=[self.worker.id])
+        url = reverse(
+            "admin:task_manager_worker_change",
+            args=[self.worker.id]
+        )
         res = self.client.get(url)
         self.assertContains(res, self.worker.position)
 

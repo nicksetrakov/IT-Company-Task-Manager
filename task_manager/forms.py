@@ -1,6 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm, UsernameField
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    UserChangeForm,
+    AuthenticationForm,
+    UsernameField,
+)
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
@@ -59,15 +64,13 @@ class TaskForm(forms.ModelForm):
             "priority",
             "task_type",
             "assignees",
-            "tags"
+            "tags",
         ]
 
 
 class WorkerCreationForm(UserCreationForm):
     position = forms.ModelChoiceField(
-        queryset=Position.objects.all(),
-        widget=forms.Select,
-        required=False
+        queryset=Position.objects.all(), widget=forms.Select, required=False
     )
     field_order = [
         "username",
@@ -75,7 +78,7 @@ class WorkerCreationForm(UserCreationForm):
         "password2",
         "first_name",
         "last_name",
-        "position"
+        "position",
     ]
 
     class Meta(UserCreationForm.Meta):
@@ -89,50 +92,73 @@ class WorkerCreationForm(UserCreationForm):
 
 class WorkerPositionUpdateForm(forms.ModelForm):
     position = forms.ModelChoiceField(
-        queryset=Position.objects.all(),
-        widget=forms.Select,
-        required=False
+        queryset=Position.objects.all(), widget=forms.Select, required=False
     )
 
     class Meta(UserChangeForm.Meta):
         model = Worker
-        fields = (
-            "position",
-        )
+        fields = ("position",)
 
 
 class RegistrationForm(UserCreationForm):
     password1 = forms.CharField(
         label=_("Password"),
-        widget=forms.PasswordInput(attrs={'class': 'form-control form-control-lg', 'placeholder': 'Password'}),
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "placeholder": "Password"
+            }
+        ),
     )
     password2 = forms.CharField(
         label=_("Password Confirmation"),
         widget=forms.PasswordInput(
-            attrs={'class': 'form-control form-control-lg', 'placeholder': 'Password Confirmation'}),
+            attrs={
+                "class": "form-control form-control-lg",
+                "placeholder": "Password Confirmation",
+            }
+        ),
     )
 
     class Meta:
         model = User
-        fields = ('username', 'email',)
+        fields = (
+            "username",
+            "email",
+        )
 
         widgets = {
-            'username': forms.TextInput(attrs={
-                'class': 'form-control form-control-lg',
-                'placeholder': 'Username'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control form-control-lg',
-                'placeholder': 'Email'
-            })
+            "username": forms.TextInput(
+                attrs={
+                    "class": "form-control form-control-lg",
+                    "placeholder": "Username",
+                }
+            ),
+            "email": forms.EmailInput(
+                attrs={
+                    "class": "form-control form-control-lg",
+                    "placeholder": "Email"
+                }
+            ),
         }
 
 
 class UserLoginForm(AuthenticationForm):
     username = UsernameField(
-        widget=forms.TextInput(attrs={"class": "form-control form-control-lg", "placeholder": "Username"}))
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "placeholder": "Username"
+            }
+        )
+    )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
-        widget=forms.PasswordInput(attrs={"class": "form-control form-control-lg", "placeholder": "Password"}),
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control form-control-lg",
+                "placeholder": "Password"
+            }
+        ),
     )

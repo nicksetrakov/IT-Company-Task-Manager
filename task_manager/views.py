@@ -4,13 +4,24 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse, HttpResponsePermanentRedirect, HttpResponseRedirect
+from django.http import (
+    HttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+)
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerCreationForm, \
-    WorkerPositionUpdateForm, RegistrationForm, UserLoginForm
+from task_manager.forms import (
+    SearchForm,
+    TaskForm,
+    WorkerSearchForm,
+    WorkerCreationForm,
+    WorkerPositionUpdateForm,
+    RegistrationForm,
+    UserLoginForm,
+)
 from task_manager.models import Worker, Task, Position, TaskType, Tag
 
 
@@ -42,9 +53,7 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
     ) -> dict[str, Any]:
         context = super(PositionListView, self).get_context_data(**kwargs)
         name = self.request.GET.get("name", "")
-        context["search_form"] = SearchForm(
-            initial={"name": name}
-        )
+        context["search_form"] = SearchForm(initial={"name": name})
         return context
 
     def get_queryset(self) -> Any:
@@ -84,9 +93,7 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
     ) -> dict[str, Any]:
         context = super(TaskTypeListView, self).get_context_data(**kwargs)
         name = self.request.GET.get("name", "")
-        context["search_form"] = SearchForm(
-            initial={"name": name}
-        )
+        context["search_form"] = SearchForm(initial={"name": name})
         return context
 
     def get_queryset(self) -> Any:
@@ -125,9 +132,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
     ) -> dict[str, Any]:
         context = super(TaskListView, self).get_context_data(**kwargs)
         name = self.request.GET.get("name", "")
-        context["search_form"] = SearchForm(
-            initial={"name": name}
-        )
+        context["search_form"] = SearchForm(initial={"name": name})
         return context
 
     def get_queryset(self) -> Any:
@@ -151,7 +156,10 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = TaskForm
 
     def get_success_url(self) -> Any:
-        return reverse_lazy("task_manager:task-detail", kwargs={'pk': self.object.pk})
+        return reverse_lazy(
+            "task_manager:task-detail",
+            kwargs={"pk": self.object.pk}
+        )
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
@@ -159,24 +167,29 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['assignees'] = self.object.assignees.all()
+        context["assignees"] = self.object.assignees.all()
         return context
 
     def get_queryset(self) -> Any:
-        return super().get_queryset().select_related('task_type').prefetch_related('assignees')
+        return (
+            super()
+            .get_queryset()
+            .select_related("task_type")
+            .prefetch_related("assignees")
+        )
 
 
 class TaskCompleteView(LoginRequiredMixin, generic.View):
     def post(
-            self, request, *args, **kwargs
+        self, request, *args, **kwargs
     ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
-        task = Task.objects.get(pk=self.kwargs['pk'])
+        task = Task.objects.get(pk=self.kwargs["pk"])
         if task.is_completed:
             task.is_completed = False
         else:
             task.is_completed = True
         task.save()
-        return redirect('task_manager:task-detail', pk=task.pk)
+        return redirect("task_manager:task-detail", pk=task.pk)
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -199,7 +212,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Worker.objects.all().select_related('position')
+        queryset = Worker.objects.all().select_related("position")
         form = WorkerSearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -213,12 +226,20 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["completed"] = [task.name for task in self.object.tasks.all() if task.is_completed]
-        context["not_completed"] = [task.name for task in self.object.tasks.all() if not task.is_completed]
+        context["completed"] = [
+            task.name for task in self.object.tasks.all() if task.is_completed
+        ]
+        context["not_completed"] = [
+            task.name for task in self.object.tasks.all()
+            if not task.is_completed
+        ]
         return context
 
     def get_queryset(self) -> Any:
-        return super().get_queryset().select_related('position').prefetch_related('tasks')
+        return (
+            super().get_queryset().select_related("position").
+            prefetch_related("tasks")
+        )
 
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
@@ -231,7 +252,8 @@ class WorkerPositionUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = WorkerPositionUpdateForm
 
     def get_success_url(self) -> Any:
-        return reverse_lazy("task_manager:worker-detail", kwargs={'pk': self.object.pk})
+        return reverse_lazy("task_manager:worker-detail",
+                            kwargs={"pk": self.object.pk})
 
 
 class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -239,30 +261,34 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:worker-list")
 
 
-def register(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect | HttpResponse:
-    if request.method == 'POST':
+def register(
+    request,
+) -> HttpResponsePermanentRedirect | HttpResponseRedirect | HttpResponse:
+    if request.method == "POST":
         form = WorkerCreationForm(request.POST)
         if form.is_valid():
             form.save()
             print("Account created successfully!")
-            return redirect('/accounts/login')
+            return redirect("/accounts/login")
         else:
             print("Registration failed!")
     else:
         form = WorkerCreationForm()
 
-    context = {'form': form}
-    return render(request, 'accounts/sign-up.html', context)
+    context = {"form": form}
+    return render(request, "accounts/sign-up.html", context)
 
 
 class UserLoginView(LoginView):
-    template_name = 'accounts/sign-in.html'
+    template_name = "accounts/sign-in.html"
     form_class = UserLoginForm
 
 
-def logout_view(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
+def logout_view(
+        request
+) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
     logout(request)
-    return redirect('/accounts/login')
+    return redirect("/accounts/login")
 
 
 class TagListView(LoginRequiredMixin, generic.ListView):
@@ -275,9 +301,7 @@ class TagListView(LoginRequiredMixin, generic.ListView):
     ) -> dict[str, Any]:
         context = super(TagListView, self).get_context_data(**kwargs)
         name = self.request.GET.get("name", "")
-        context["search_form"] = SearchForm(
-            initial={"name": name}
-        )
+        context["search_form"] = SearchForm(initial={"name": name})
         return context
 
     def get_queryset(self) -> Any:
@@ -316,4 +340,5 @@ def toggle_assign_to_task(request, pk) -> HttpResponseRedirect:
         worker.tasks.remove(pk)
     else:
         worker.tasks.add(pk)
-    return HttpResponseRedirect(reverse_lazy("task_manager:task-detail", args=[pk]))
+    return HttpResponseRedirect(
+        reverse_lazy("task_manager:task-detail", args=[pk]))
