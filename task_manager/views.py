@@ -19,7 +19,6 @@ from task_manager.forms import (
     WorkerSearchForm,
     WorkerCreationForm,
     WorkerPositionUpdateForm,
-    RegistrationForm,
     UserLoginForm,
 )
 from task_manager.models import Worker, Task, Position, TaskType, Tag
