@@ -38,7 +38,7 @@ class AdminSiteTests(TestCase):
         self.assertContains(res, self.worker.position)
 
     def test_worker_add(self):
-        url = reverse("admin:taxi_worker_add")
+        url = reverse("admin:task_manager_worker_add")
         res = self.client.get(url)
         self.assertContains(res, "id_first_name")
         self.assertContains(res, "id_last_name")

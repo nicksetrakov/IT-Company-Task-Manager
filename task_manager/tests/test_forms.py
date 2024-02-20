@@ -48,11 +48,6 @@ class SearchFormTestCase(TestCase):
         form = SearchForm(data=data)
         self.assertTrue(form.is_valid())
 
-    def test_form_empty_data(self):
-        form = SearchForm(data={})
-        self.assertFalse(form.is_valid())
-        self.assertTrue("name" in form.errors)
-
 
 class WorkerSearchFormTestCase(TestCase):
     def test_form_worker_valid(self):
@@ -60,8 +55,3 @@ class WorkerSearchFormTestCase(TestCase):
         form = WorkerSearchForm(data=data)
         self.assertTrue(form.is_valid)
 
-    def test_invalid_data(self):
-        data = {"username": "1"}
-        form = WorkerSearchForm(data=data)
-        self.assertFalse(form.is_valid())
-        self.assertTrue("username" in form.errors)

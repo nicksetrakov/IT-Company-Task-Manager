@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
@@ -64,7 +66,7 @@ class ModelsTests(TestCase):
         task = Task.objects.create(
             name="Test Task",
             description="Test Description",
-            deadline=timezone.now(),
+            deadline=timezone.now() + timedelta(days=1),
             is_completed=False,
             priority="High",
             task_type=task_type
@@ -75,7 +77,7 @@ class ModelsTests(TestCase):
         task = Task(
             name="Test Task",
             description="Test Description",
-            deadline=timezone.now() - timezone.timedelta(days=1),
+            deadline=timezone.now() - timedelta(days=1),
             is_completed=False,
             priority="High",
             task_type=TaskType.objects.create(name="Test Task Type")
@@ -87,7 +89,7 @@ class ModelsTests(TestCase):
         task = Task.objects.create(
             name="Test Task",
             description="Test Description",
-            deadline=timezone.now() + timezone.timedelta(days=1),
+            deadline=timezone.now() + timedelta(days=1),
             is_completed=False,
             priority="High",
             task_type=TaskType.objects.create(name="Test Task Type")

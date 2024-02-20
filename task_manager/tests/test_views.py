@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -32,7 +34,7 @@ class PrivatePositionTest(TestCase):
         self.assertEqual(
             list(res.context["position_list"]), list(positions)
         )
-        self.assertTemplateUsed(res, "taxi/position_list.html")
+        self.assertTemplateUsed(res, "task_manager/position_list.html")
 
 
 class PublicTaskTest(TestCase):
@@ -58,7 +60,7 @@ class PrivateTaskTest(TestCase):
         task = Task.objects.create(
             name="Test Task",
             description="Test Description",
-            deadline=timezone.now(),
+            deadline=timezone.now() + timedelta(days=1),
             is_completed=False,
             priority="High",
             task_type=task_type
