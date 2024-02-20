@@ -11,7 +11,7 @@ from django.views import generic
 
 from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerCreationForm, \
     WorkerPositionUpdateForm, RegistrationForm, UserLoginForm
-from task_manager.models import Worker, Task, Position, TaskType
+from task_manager.models import Worker, Task, Position, TaskType, Tag
 
 
 def index(request) -> HttpResponse:
@@ -263,3 +263,45 @@ class UserLoginView(LoginView):
 def logout_view(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
     logout(request)
     return redirect('/accounts/login')
+
+
+class TagListView(LoginRequiredMixin, generic.ListView):
+    model = Tag
+    context_object_name = "tag_list"
+    paginate_by = 5
+
+    def get_context_data(
+            self, *, object_list=None, **kwargs
+    ) -> dict[str, Any]:
+        context = super(TagListView, self).get_context_data(**kwargs)
+        name = self.request.GET.get("name", "")
+        context["search_form"] = SearchForm(
+            initial={"name": name}
+        )
+        return context
+
+    def get_queryset(self) -> Any:
+        queryset = Tag.objects.all()
+        form = SearchForm(self.request.GET)
+        if form.is_valid():
+            queryset = queryset.filter(
+                name__icontains=form.cleaned_data["name"]
+            )
+        return queryset
+
+
+class TagCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Tag
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:tag-list")
+
+
+class TagUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Tag
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:tag-list")
+
+
+class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Tag
+    success_url = reverse_lazy("task_manager:tag-list")
