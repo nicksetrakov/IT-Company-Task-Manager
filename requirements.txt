@@ -1,12 +1,10 @@
 asgiref==3.7.2
-black==24.2.0
 click==8.1.7
 colorama==0.4.6
 crispy-bootstrap4==2023.1
 Django==4.2
 django-crispy-forms==2.1
 django-debug-toolbar==3.2.4
-django-theme-soft-design==1.0.10
 flake8==5.0.4
 flake8-quotes==3.3.1
 flake8-variables-names==0.0.5
