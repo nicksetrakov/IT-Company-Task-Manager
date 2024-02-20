@@ -17,6 +17,16 @@ class Position(models.Model):
         return f"{self.name}"
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return f"{self.name}"
+
+
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True, blank=True)
 
@@ -56,6 +66,7 @@ class Task(models.Model):
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES)
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     assignees = models.ManyToManyField(Worker, related_name="tasks")
+    tags = models.ManyToManyField(Tag, related_name="tasks")
 
     def clean(self) -> None:
         if self.deadline and self.deadline < timezone.now():
