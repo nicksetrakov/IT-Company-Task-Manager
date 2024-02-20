@@ -59,6 +59,11 @@
             {% else %}
               <p>Task has not done</p>
             {% endif %}
+            <p>
+              {% for tag in task.tags.all %}
+                #{{ tag }} {% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </p>
           </div>
         </div>
       </div>
