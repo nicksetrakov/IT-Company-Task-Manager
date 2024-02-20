@@ -57,7 +57,7 @@ class TaskForm(forms.ModelForm):
         ]
 
 
-class WorkerCreateForm(UserCreationForm):
+class WorkerCreationForm(UserCreationForm):
     position = forms.ModelChoiceField(
         queryset=Position.objects.all(),
         widget=forms.Select,

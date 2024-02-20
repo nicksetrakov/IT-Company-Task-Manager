@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerCreateForm, \
+from task_manager.forms import SearchForm, TaskForm, WorkerSearchForm, WorkerCreationForm, \
     WorkerPositionUpdateForm, RegistrationForm, UserLoginForm
 from task_manager.models import Worker, Task, Position, TaskType
 
@@ -223,7 +223,7 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
 class WorkerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Worker
-    form_class = WorkerCreateForm
+    form_class = WorkerCreationForm
 
 
 class WorkerPositionUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -241,7 +241,7 @@ class WorkerDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 def register(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect | HttpResponse:
     if request.method == 'POST':
-        form = WorkerCreateForm(request.POST)
+        form = WorkerCreationForm(request.POST)
         if form.is_valid():
             form.save()
             print("Account created successfully!")
@@ -249,7 +249,7 @@ def register(request) -> HttpResponsePermanentRedirect | HttpResponseRedirect | 
         else:
             print("Registration failed!")
     else:
-        form = WorkerCreateForm()
+        form = WorkerCreationForm()
 
     context = {'form': form}
     return render(request, 'accounts/sign-up.html', context)
