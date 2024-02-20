@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, Authenti
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from task_manager.models import Worker, Position, TaskType, Task
+from task_manager.models import Worker, Position, TaskType, Task, Tag
 
 
 class SearchForm(forms.Form):
@@ -38,6 +38,11 @@ class TaskForm(forms.ModelForm):
         queryset=get_user_model().objects.all(),
         widget=forms.CheckboxSelectMultiple,
     )
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     deadline = forms.DateTimeField(
         widget=forms.DateTimeInput(
             attrs={"class": "form-control", "type": "datetime-local"}
@@ -54,6 +59,7 @@ class TaskForm(forms.ModelForm):
             "priority",
             "task_type",
             "assignees",
+            "tags"
         ]
 
 
