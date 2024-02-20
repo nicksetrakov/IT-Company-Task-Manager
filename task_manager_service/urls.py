@@ -28,6 +28,5 @@ urlpatterns = [
     path("accounts/login/", views.UserLoginView.as_view(), name="login"),
     path("accounts/register/", views.register, name="register"),
     path("accounts/logout/", views.logout_view, name="logout"),
-    # path("", include("theme_soft_design.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
