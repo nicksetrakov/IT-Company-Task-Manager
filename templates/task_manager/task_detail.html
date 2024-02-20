@@ -11,7 +11,7 @@
           Delete
         </a>
 
-        <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn btn-gradient-secondary link-to-page">
+        <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn bg-gradient-secondary link-to-page">
           Update
         </a>
         {% if user in assignees %}
