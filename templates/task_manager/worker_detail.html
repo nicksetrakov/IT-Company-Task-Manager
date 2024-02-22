@@ -1,0 +1,37 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+  <h1>
+    Username: {{ worker.username }}
+    <a href="{% url 'task_manager:worker-delete' pk=worker.id %}" class="btn btn-danger link-to-page">
+      Delete
+    </a>
+
+    <a href="{% url 'task_manager:worker-update' pk=worker.id %}" class="btn btn-secondary link-to-page">
+      Update Position
+    </a>
+  </h1>
+
+  <p><strong>First name:</strong> {{ worker.first_name }}</p>
+  <p><strong>Last name:</strong> {{ worker.last_name }}</p>
+  <p><strong>Position:</strong> {{ worker.position }}</p>
+  <p><strong>Is staff:</strong> {{ worker.is_staff }}</p>
+
+  <div class="ml-3">
+    <h4>Tasks</h4>
+        <hr>
+    {% if completed or not_completed %}
+        <p>
+          <strong>Completed:</strong>
+          {{ completed|join:", " }}
+        </p>
+        <p>
+          <strong>Not Completed:</strong>
+          {{ not_completed|join:", " }}
+        </p>
+
+    {% else %}
+      <p>No task for this worker</p>
+    {% endif %}
+  </div>
+{% endblock %}

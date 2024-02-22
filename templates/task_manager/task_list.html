@@ -1,0 +1,33 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Tasks</h1>
+    <a href="{% url 'task_manager:task-create' %}" class="btn btn-primary btn-lg link-to-page">Create Task</a>
+  </div>
+  {% include "includes/search_form.html" %}
+  {% if task_list %}
+    {% for task in task_list %}
+      <div class="card">
+        <div class="card-body pt-2">
+          <a href="{{ task.get_absolute_url }}" class="card-title h5 d-block text-darker">
+            {{ task.name }}
+          </a>
+          <p class="card-description mb-4">
+            {{ task.description|truncatechars:100 }}
+          </p>
+          <div class="author align-items-center">
+            <div class="name ps-3">
+              <span>Task type: {{ task.task_type }}</span>
+              <div class="stats">
+                <small>Deadline: {{ task.deadline }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>There are no tasks in the service.</p>
+  {% endif %}
+
+{% endblock %}
