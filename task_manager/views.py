@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.http import (
     HttpResponse,
     HttpResponsePermanentRedirect,
-    HttpResponseRedirect,
+    HttpResponseRedirect, HttpRequest,
 )
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -24,7 +24,7 @@ from task_manager.forms import (
 from task_manager.models import Worker, Task, Position, TaskType, Tag
 
 
-def index(request) -> HttpResponse:
+def index(request: HttpRequest) -> HttpResponse:
     """View function for the home page of the site."""
 
     num_workers = Worker.objects.count()
@@ -56,7 +56,7 @@ class PositionListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Position.objects.all()
+        queryset = Position.objects
         form = SearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -96,7 +96,7 @@ class TaskTypeListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = TaskType.objects.all()
+        queryset = TaskType.objects
         form = SearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -135,7 +135,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Task.objects.all().select_related("task_type")
+        queryset = Task.objects.select_related("task_type")
         form = SearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -183,10 +183,8 @@ class TaskCompleteView(LoginRequiredMixin, generic.View):
         self, request, *args, **kwargs
     ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         task = Task.objects.get(pk=self.kwargs["pk"])
-        if task.is_completed:
-            task.is_completed = False
-        else:
-            task.is_completed = True
+
+        task.is_completed = not task.is_completed
         task.save()
         return redirect("task_manager:task-detail", pk=task.pk)
 
@@ -211,7 +209,7 @@ class WorkerListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Worker.objects.all().select_related("position")
+        queryset = Worker.objects.select_related("position")
         form = WorkerSearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -225,11 +223,12 @@ class WorkerDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        tasks = self.object.tasks.all()
         context["completed"] = [
-            task.name for task in self.object.tasks.all() if task.is_completed
+            task.name for task in tasks if task.is_completed
         ]
         context["not_completed"] = [
-            task.name for task in self.object.tasks.all()
+            task.name for task in tasks
             if not task.is_completed
         ]
         return context
@@ -304,7 +303,7 @@ class TagListView(LoginRequiredMixin, generic.ListView):
         return context
 
     def get_queryset(self) -> Any:
-        queryset = Tag.objects.all()
+        queryset = Tag.objects
         form = SearchForm(self.request.GET)
         if form.is_valid():
             queryset = queryset.filter(
@@ -333,9 +332,7 @@ class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
 @login_required
 def toggle_assign_to_task(request, pk) -> HttpResponseRedirect:
     worker = Worker.objects.get(id=request.user.id)
-    if (
-        Task.objects.get(id=pk) in worker.tasks.all()
-    ):  # probably could check if car exists
+    if worker.tasks.filter(id=pk):
         worker.tasks.remove(pk)
     else:
         worker.tasks.add(pk)

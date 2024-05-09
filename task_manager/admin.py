@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import Worker, Task, TaskType, Position, Tag
 
 
@@ -26,7 +27,7 @@ class WorkerAdmin(UserAdmin):
 
 
 @admin.register(Task)
-class CarAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_filter = ("task_type",)
 

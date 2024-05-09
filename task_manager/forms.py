@@ -9,7 +9,7 @@ from django.contrib.auth.forms import (
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
-from task_manager.models import Worker, Position, TaskType, Task, Tag
+from task_manager.models import Worker, Position, TaskType, Task, Tag, Priority
 
 
 class SearchForm(forms.Form):
@@ -32,19 +32,19 @@ class WorkerSearchForm(forms.Form):
 
 class TaskForm(forms.ModelForm):
     priority = forms.ChoiceField(
-        choices=Task.PRIORITY_CHOICES,
+        choices=Priority.choices,
         widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
     )
     task_type = forms.ModelChoiceField(
-        queryset=TaskType.objects.all(),
+        queryset=TaskType.objects,
         widget=forms.RadioSelect(attrs={"class": "form-check-input"}),
     )
     assignees = forms.ModelMultipleChoiceField(
-        queryset=get_user_model().objects.all(),
+        queryset=get_user_model().objects,
         widget=forms.CheckboxSelectMultiple,
     )
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects,
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
@@ -70,7 +70,7 @@ class TaskForm(forms.ModelForm):
 
 class WorkerCreationForm(UserCreationForm):
     position = forms.ModelChoiceField(
-        queryset=Position.objects.all(), widget=forms.Select, required=False
+        queryset=Position.objects, widget=forms.Select, required=False
     )
     field_order = [
         "username",
@@ -92,7 +92,7 @@ class WorkerCreationForm(UserCreationForm):
 
 class WorkerPositionUpdateForm(forms.ModelForm):
     position = forms.ModelChoiceField(
-        queryset=Position.objects.all(), widget=forms.Select, required=False
+        queryset=Position.objects, widget=forms.Select, required=False
     )
 
     class Meta(UserChangeForm.Meta):

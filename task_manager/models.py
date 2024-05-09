@@ -29,7 +29,11 @@ class Tag(models.Model):
 
 class Worker(AbstractUser):
     position = models.ForeignKey(
-        Position, on_delete=models.CASCADE, null=True, blank=True
+        Position,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="workers"
     )
 
     class Meta:
@@ -53,37 +57,36 @@ class TaskType(models.Model):
         return f"{self.name}"
 
 
+class Priority(models.TextChoices):
+    URGENT = "urgent", "Urgent"
+    HIGH = "high", "High"
+    MEDIUM = "medium", "Medium"
+    LOW = "low", "Low"
+
+
 class Task(models.Model):
-    PRIORITY_CHOICES = [
-        ("Urgent", "Urgent"),
-        ("High", "High"),
-        ("Medium", "Medium"),
-        ("Low", "Low"),
-    ]
 
     name = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.DateTimeField()
     is_completed = models.BooleanField(default=False)
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES)
+    priority = models.CharField(
+        max_length=20, choices=Priority.choices, default=Priority.LOW
+    )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     assignees = models.ManyToManyField(Worker, related_name="tasks")
     tags = models.ManyToManyField(Tag, related_name="tasks")
 
     def clean(self) -> None:
-        if self.deadline and self.deadline < timezone.now():
+        if self.deadline < timezone.now():
             raise ValidationError("The deadline cannot be in the past.")
 
     def save(
-        self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: Any | None = None,
-        update_fields: Any | None = None,
+        self, *args, **kwargs
     ) -> None:
         self.full_clean()
-        return super(Task, self).save(
-            force_insert, force_update, using, update_fields
+        return super().save(
+            *args, **kwargs
         )
 
     def __str__(self) -> str:
