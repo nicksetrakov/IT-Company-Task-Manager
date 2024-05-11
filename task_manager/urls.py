@@ -4,22 +4,6 @@ from task_manager import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("positions/", views.PositionListView.as_view(), name="position-list"),
-    path(
-        "positions/create/",
-        views.PositionCreateView.as_view(),
-        name="position-create"
-    ),
-    path(
-        "positions/<int:pk>/update/",
-        views.PositionUpdateView.as_view(),
-        name="position-update",
-    ),
-    path(
-        "positions/<int:pk>/delete/",
-        views.PositionDeleteView.as_view(),
-        name="position-delete",
-    ),
     path(
         "task-types/",
         views.TaskTypeListView.as_view(),
@@ -66,27 +50,6 @@ urlpatterns = [
         "tasks/<int:pk>/complete/",
         views.TaskCompleteView.as_view(),
         name="task-complete",
-    ),
-    path("workers/", views.WorkerListView.as_view(), name="worker-list"),
-    path(
-        "workers/create/",
-        views.WorkerCreateView.as_view(),
-        name="worker-create"
-    ),
-    path(
-        "workers/<int:pk>/",
-        views.WorkerDetailView.as_view(),
-        name="worker-detail"
-    ),
-    path(
-        "workers/<int:pk>/update",
-        views.WorkerPositionUpdateView.as_view(),
-        name="worker-update",
-    ),
-    path(
-        "workers/<int:pk>/delete",
-        views.WorkerDeleteView.as_view(),
-        name="worker-delete",
     ),
     path("tags/", views.TagListView.as_view(), name="tag-list"),
     path("tags/create/", views.TagCreateView.as_view(), name="tag-create"),

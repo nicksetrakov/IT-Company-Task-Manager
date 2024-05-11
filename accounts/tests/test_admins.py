@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from django.urls import reverse
 
-from task_manager.models import Position
+from accounts.models import Position
 
 
 class AdminSiteTests(TestCase):
@@ -22,7 +22,7 @@ class AdminSiteTests(TestCase):
         Test that worker's position is in list_display
          on worker admin page
         """
-        url = reverse("admin:task_manager_worker_changelist")
+        url = reverse("admin:accounts_worker_changelist")
         res = self.client.get(url)
         self.assertContains(res, self.worker.position)
 
@@ -31,14 +31,14 @@ class AdminSiteTests(TestCase):
         Test that worker's position is on worker detail admin page
         """
         url = reverse(
-            "admin:task_manager_worker_change",
+            "admin:accounts_worker_change",
             args=[self.worker.id]
         )
         res = self.client.get(url)
         self.assertContains(res, self.worker.position)
 
     def test_worker_add(self):
-        url = reverse("admin:task_manager_worker_add")
+        url = reverse("admin:accounts_worker_add")
         res = self.client.get(url)
         self.assertContains(res, "id_first_name")
         self.assertContains(res, "id_last_name")

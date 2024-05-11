@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap4",
     "crispy_forms",
     "task_manager",
+    "accounts"
 ]
 
 MIDDLEWARE = [
@@ -111,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "task_manager.Worker"
+AUTH_USER_MODEL = "accounts.Worker"
 
 LOGIN_REDIRECT_URL = "/"
 

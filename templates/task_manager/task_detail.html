@@ -10,7 +10,6 @@
         <a href="{% url 'task_manager:task-delete' pk=task.id %}" class="btn bg-gradient-danger link-to-page">
           Delete
         </a>
-
         <a href="{% url 'task_manager:task-update' pk=task.id %}" class="btn bg-gradient-secondary link-to-page">
           Update
         </a>
@@ -25,7 +24,6 @@
           </form>
         {% endif %}
       </div>
-
       <div class="col-lg-6 mt-lg-0 mt-5 ps-lg-0 ps-0">
         <div class="p-3 info-horizontal">
           <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
@@ -35,7 +33,6 @@
             <p class="mb-0">Priority: {{ task.priority }}</p>
           </div>
         </div>
-
         <div class="p-3 info-horizontal">
           <div class="icon icon-shape rounded-circle bg-gradient-primary shadow text-center">
             <i class="fas fa-handshake opacity-10"></i>
@@ -56,7 +53,6 @@
                   Assign me to this task
                 </a>
               {% endif %}
-
             </p>
           </div>
         </div>

@@ -1,20 +1,10 @@
 from typing import Any
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.utils import timezone
-
-
-class Position(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self) -> str:
-        return f"{self.name}"
 
 
 class Tag(models.Model):
@@ -25,26 +15,6 @@ class Tag(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}"
-
-
-class Worker(AbstractUser):
-    position = models.ForeignKey(
-        Position,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="workers"
-    )
-
-    class Meta:
-        verbose_name = "worker"
-        verbose_name_plural = "workers"
-
-    def __str__(self) -> str:
-        return f"{self.username} ({self.first_name} {self.last_name})"
-
-    def get_absolute_url(self) -> Any:
-        return reverse("task_manager:worker-detail", kwargs={"pk": self.pk})
 
 
 class TaskType(models.Model):
@@ -74,7 +44,7 @@ class Task(models.Model):
         max_length=20, choices=Priority.choices, default=Priority.LOW
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    assignees = models.ManyToManyField(Worker, related_name="tasks")
+    assignees = models.ManyToManyField(get_user_model(), related_name="tasks")
     tags = models.ManyToManyField(Tag, related_name="tasks")
 
     def clean(self) -> None:

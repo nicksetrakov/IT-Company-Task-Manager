@@ -57,7 +57,7 @@
                       </div>
                       Landing Pages
                     </div>
-                    <a href="{% url 'task_manager:worker-list' %}" class="dropdown-item border-radius-md">
+                    <a href="{% url 'accounts:worker-list' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Workers</span>
                     </a>
                     <a href="{% url 'task_manager:task-list' %}" class="dropdown-item border-radius-md">
@@ -66,7 +66,7 @@
                     <a href="{% url 'task_manager:task-type-list' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Task types</span>
                     </a>
-                    <a href="{% url 'task_manager:position-list' %}" class="dropdown-item border-radius-md">
+                    <a href="{% url 'accounts:position-list' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Positions</span>
                     </a>
                     <a href="{% url 'task_manager:tag-list' %}" class="dropdown-item border-radius-md">
@@ -103,14 +103,14 @@
                     <a href="{{ user.get_absolute_url }}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Profile</span>
                     </a>
-                    <a href="{% url 'logout' %}" class="dropdown-item border-radius-md">
+                    <a href="{% url 'accounts:logout' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Logout</span>
                     </a>
                     {% else %}
-                    <a href="{% url 'login' %}" class="dropdown-item border-radius-md">
+                    <a href="{% url 'accounts:login' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Sign In</span>
                     </a>
-                    <a href="{% url 'register' %}" class="dropdown-item border-radius-md">
+                    <a href="{% url 'accounts:register' %}" class="dropdown-item border-radius-md">
                       <span class="ps-3">Sign Up</span>
                     </a>
                     {% endif %}
@@ -121,7 +121,7 @@
               {% if request.user.is_authenticated %}
               <li class="nav-item ms-lg-auto">
                 <a class="nav-link nav-link-icon me-2"
-                  href="{% url 'logout' %}">
+                  href="{% url 'accounts:logout' %}">
                   <i class="fa fa-sign-out me-1"></i>
                   <p class="d-inline text-sm z-index-1 font-weight-bold" data-bs-toggle="tooltip"
                     data-bs-placement="bottom" title="Logout">Logout</p>
@@ -130,7 +130,7 @@
               {% else %}
               <li class="nav-item ms-lg-auto">
                 <a class="nav-link nav-link-icon me-2"
-                  href="{% url 'login' %}">
+                  href="{% url 'accounts:login' %}">
                   <i class="fa fa-sign-in me-1"></i>
                   <p class="d-inline text-sm z-index-1 font-weight-bold" data-bs-toggle="tooltip"
                     data-bs-placement="bottom" title="Login">Login</p>
