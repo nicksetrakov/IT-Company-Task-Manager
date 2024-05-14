@@ -34,12 +34,12 @@ urlpatterns = [
         name="worker-detail"
     ),
     path(
-        "<int:pk>/update",
+        "<int:pk>/update/",
         views.WorkerPositionUpdateView.as_view(),
         name="worker-update",
     ),
     path(
-        "<int:pk>/delete",
+        "<int:pk>/delete/",
         views.WorkerDeleteView.as_view(),
         name="worker-delete",
     ),
