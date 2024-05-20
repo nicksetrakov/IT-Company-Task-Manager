@@ -1,47 +1,60 @@
 from django.urls import path
 
-from accounts import views
+from accounts.views import (
+    UserLoginView,
+    WorkerRegisterView,
+    logout_view,
+    PositionListView,
+    WorkerListView,
+    PositionCreateView,
+    PositionUpdateView,
+    PositionDeleteView,
+    WorkerDetailView,
+    WorkerPositionUpdateView,
+    ActivateAccountView,
+    CreateProfileView
+)
+
 
 urlpatterns = [
-    path("login/", views.UserLoginView.as_view(), name="login"),
-    path("register/", views.register, name="register"),
-    path("logout/", views.logout_view, name="logout"),
-    path("positions/", views.PositionListView.as_view(), name="position-list"),
+    path("login/", UserLoginView.as_view(), name="login"),
+    path("register/", WorkerRegisterView.as_view(), name="register"),
+    path("logout/", logout_view, name="logout"),
+    path("positions/", PositionListView.as_view(), name="position-list"),
     path(
         "positions/create/",
-        views.PositionCreateView.as_view(),
+        PositionCreateView.as_view(),
         name="position-create"
     ),
     path(
         "positions/<int:pk>/update/",
-        views.PositionUpdateView.as_view(),
+        PositionUpdateView.as_view(),
         name="position-update",
     ),
     path(
         "positions/<int:pk>/delete/",
-        views.PositionDeleteView.as_view(),
+        PositionDeleteView.as_view(),
         name="position-delete",
     ),
-    path("", views.WorkerListView.as_view(), name="worker-list"),
-    path(
-        "create/",
-        views.WorkerCreateView.as_view(),
-        name="worker-create"
-    ),
+    path("", WorkerListView.as_view(), name="worker-list"),
     path(
         "<int:pk>/",
-        views.WorkerDetailView.as_view(),
+        WorkerDetailView.as_view(),
         name="worker-detail"
     ),
     path(
         "<int:pk>/update/",
-        views.WorkerPositionUpdateView.as_view(),
+        WorkerPositionUpdateView.as_view(),
         name="worker-update",
     ),
     path(
-        "<int:pk>/delete/",
-        views.WorkerDeleteView.as_view(),
-        name="worker-delete",
+        "activate/<str:username>/<str:token>/",
+        ActivateAccountView.as_view(),
+        name="activate"),
+    path(
+        "create-profile/",
+        CreateProfileView.as_view(),
+        name="profile-create"
     ),
 ]
 

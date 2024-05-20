@@ -1,0 +1,22 @@
+{% if messages %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="messages list-unstyled">
+        {% for message in messages %}
+        <div class="alert-auto-fade alert
+             {% if message.tags == 'error' %}alert-danger
+             {% elif message.tags == 'warning' %}alert-warning
+             {% elif message.tags == 'success' %}alert-success
+             {% else %}alert-info
+             {% endif %}" id="alert_block_{{ forloop.counter }}">
+          <button type="button" class="btn alert-close" data-dismiss="alert" aria-label="Close"
+                  data-target="alert_block_{{ forloop.counter }}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -1,40 +1,45 @@
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpResponse,
-    HttpResponsePermanentRedirect,
-    HttpResponseRedirect, HttpRequest,
+    HttpRequest,
 )
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
+from googleapiclient.errors import HttpError
 
 from task_manager.forms import (
     SearchForm,
     TaskForm,
 )
 from task_manager.models import Task, TaskType, Tag
+from task_manager.utils import (
+    get_credentials,
+    create_google_task,
+    update_google_task,
+    delete_google_task,
+)
 
 
-def index(request: HttpRequest) -> HttpResponse:
-    """View function for the home page of the site."""
+class IndexView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        num_workers = get_user_model().objects.count()
+        num_tasks = Task.objects.count()
+        print(num_tasks)
 
-    num_workers = get_user_model().objects.count()
-    num_tasks = Task.objects.count()
+        num_visits = request.session.get("num_visits", 0)
+        request.session["num_visits"] = num_visits + 1
 
-    num_visits = request.session.get("num_visits", 0)
-    request.session["num_visits"] = num_visits + 1
+        context = {
+            "num_workers": num_workers,
+            "num_tasks": num_tasks,
+            "num_visits": num_visits + 1,
+        }
 
-    context = {
-        "num_workers": num_workers,
-        "num_tasks": num_tasks,
-        "num_visits": num_visits + 1,
-    }
-
-    return render(request, "task_manager/index.html", context=context)
+        return render(request, "task_manager/index.html", context=context)
 
 
 class TaskTypeListView(LoginRequiredMixin, generic.ListView):
@@ -102,18 +107,57 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
 class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     model = Task
     form_class = TaskForm
+    template_name = "task_manager/task_form.html"
     success_url = reverse_lazy("task_manager:task-list")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        task = self.object
+
+        creds = get_credentials()
+
+        try:
+            google_task = create_google_task(task, creds)
+            task.google_task_id = google_task["id"]
+            task.save()
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+
+        return response
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Task
     form_class = TaskForm
+    template_name = "task_manager/task_form.html"
 
     def get_success_url(self) -> Any:
         return reverse_lazy(
-            "task_manager:task-detail",
-            kwargs={"pk": self.object.pk}
+            "task_manager:task-detail", kwargs={"pk": self.object.pk}
         )
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        task = self.object
+
+        creds = get_credentials()
+
+        try:
+            updated_task_body = {
+                "id": task.google_task_id,
+                "title": task.name,
+                "notes": task.description,
+                "due": task.deadline.isoformat(),
+            }
+            updated_task = update_google_task(
+                task.google_task_id, updated_task_body, creds
+            )
+            task.google_task_id = updated_task["id"]
+            task.save()
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+
+        return response
 
 
 class TaskDetailView(LoginRequiredMixin, generic.DetailView):
@@ -133,20 +177,50 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
         )
 
 
-class TaskCompleteView(LoginRequiredMixin, generic.View):
-    def post(
-        self, request, *args, **kwargs
-    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
-        task = Task.objects.get(pk=self.kwargs["pk"])
+class TaskCompleteView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        task = get_object_or_404(Task, pk=self.kwargs["pk"])
 
+        creds = get_credentials()
         task.is_completed = not task.is_completed
+
+        try:
+            if task.is_completed:
+                if task.google_task_id:
+                    update_google_task(
+                        task.google_task_id,
+                        {"id": task.google_task_id, "status": "completed"},
+                        creds,
+                    )
+            else:
+                if task.google_task_id:
+                    update_google_task(
+                        task.google_task_id,
+                        {"id": task.google_task_id, "status": "needsAction"},
+                        creds,
+                    )
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+
         task.save()
         return redirect("task_manager:task-detail", pk=task.pk)
 
 
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Task
-    success_url = reverse_lazy(Task.get_absolute_url)
+    template_name = "task_manager/task_confirm_delete.html"
+    success_url = reverse_lazy("task_manager:task-list")
+
+    def delete(self, request, *args, **kwargs):
+        task = self.get_object()
+        creds = get_credentials()
+
+        try:
+            delete_google_task(task.google_task_id, creds)
+        except HttpError as error:
+            print(f"An error occurred: {error}")
+
+        return super().delete(request, *args, **kwargs)
 
 
 class TagListView(LoginRequiredMixin, generic.ListView):
@@ -189,12 +263,34 @@ class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("task_manager:tag-list")
 
 
-@login_required
-def toggle_assign_to_task(request, pk) -> HttpResponseRedirect:
-    worker = get_user_model().objects.get(id=request.user.id)
-    if worker.tasks.filter(id=pk):
-        worker.tasks.remove(pk)
-    else:
-        worker.tasks.add(pk)
-    return HttpResponseRedirect(
-        reverse_lazy("task_manager:task-detail", args=[pk]))
+class ToggleAssignToTaskView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        worker = request.user
+        task = get_object_or_404(Task, pk=self.kwargs["pk"])
+
+        creds = get_credentials()
+
+        if worker.tasks.filter(id=self.kwargs["pk"]).exists():
+            worker.tasks.remove(task)
+            if task.google_task_id:
+                try:
+                    delete_google_task(task.google_task_id, creds)
+                    task.google_task_id = None
+                    task.save()
+                except HttpError as error:
+                    print(f"An error occurred: {error}")
+        else:
+            worker.tasks.add(task)
+            if task.google_task_id:
+                try:
+                    delete_google_task(task.google_task_id, creds)
+                except HttpError as error:
+                    print(f"An error occurred: {error}")
+            try:
+                google_task = create_google_task(task, creds)
+                task.google_task_id = google_task["id"]
+                task.save()
+            except HttpError as error:
+                print(f"An error occurred: {error}")
+
+        return redirect("task_manager:task-detail", pk=self.kwargs["pk"])

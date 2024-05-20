@@ -38,6 +38,7 @@
 
 
 <section class="pt-3 pb-4" id="count-stats">
+<p>{{ context|safe }}</p>
   <div class="container">
     <div class="row">
       <div class="col-lg-9 z-index-2 border-radius-xl mt-n10 mx-auto py-3 blur shadow-blur">
@@ -70,8 +71,8 @@
 
 {% endblock content %}
 
-{% block javascripts %}
-
+{% block script %}
+{{ block.super }}
 <script type="text/javascript">
 
   if (document.getElementById('state1')) {
@@ -100,4 +101,4 @@
   }
 </script>
 
-{% endblock javascripts %}
+{% endblock script %}

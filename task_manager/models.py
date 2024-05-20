@@ -43,9 +43,12 @@ class Task(models.Model):
     priority = models.CharField(
         max_length=20, choices=Priority.choices, default=Priority.LOW
     )
-    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE, related_name="tasks")
+    task_type = models.ForeignKey(
+        TaskType, on_delete=models.CASCADE, related_name="tasks"
+    )
     assignees = models.ManyToManyField(get_user_model(), related_name="tasks")
     tags = models.ManyToManyField(Tag, related_name="tasks")
+    google_task_id = models.CharField(max_length=255, blank=True, null=True)
 
     def clean(self) -> None:
         if self.deadline < timezone.now():
