@@ -55,7 +55,7 @@ class Worker(AbstractUser):
     def get_absolute_url(self) -> Any:
         return reverse("accounts:worker-detail", kwargs={"pk": self.pk})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.capitalize()
         super().save(*args, **kwargs)
@@ -77,10 +77,10 @@ class Profile(models.Model):
     date_of_birth = models.DateField(validators=[validate_birth_date])
     info = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user.username}'s profile"
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.pk:
             super().save(*args, **kwargs)
         if not self.avatar:
@@ -104,7 +104,7 @@ class AbstractToken(models.Model):
         ) > timezone.now() - timezone.timedelta(days=days)
         return validate_exp
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.token:
             self.token = get_random_string(length=64)
         super().save(*args, **kwargs)
@@ -115,7 +115,7 @@ class ActivateToken(AbstractToken):
     class Meta:
         verbose_name_plural = "Activation tokens"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user}'s token activate: {self.token}"
 
 # It is for future realization

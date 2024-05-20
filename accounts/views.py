@@ -11,6 +11,7 @@ from django.http import (
     HttpRequest,
 )
 from django.shortcuts import redirect, get_object_or_404
+from django.template.response import TemplateResponse
 from django.urls import reverse_lazy, reverse
 from django.utils.encoding import iri_to_uri
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -125,13 +126,17 @@ class WorkerRegisterView(generic.CreateView):
     form_class = RegistrationForm
     success_url = reverse_lazy("accounts:login")
 
-    def get(self, request, *args, **kwargs):
+    def get(
+            self, request, *args, **kwargs
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         if request.user.is_authenticated:
             messages.info(request, "You are already logged in")
             return redirect("task_manager:index")
         return super().get(request, *args, **kwargs)
 
-    def form_valid(self, form):
+    def form_valid(
+            self, form: RegistrationForm
+    ) -> HttpResponseRedirect:
         user = form.save(commit=False)
         user.is_active = False
         user.save()
@@ -158,7 +163,9 @@ class WorkerRegisterView(generic.CreateView):
         )
         return super().form_valid(form)
 
-    def form_invalid(self, form):
+    def form_invalid(
+            self, form: RegistrationForm
+    ) -> Any:
         return super().form_invalid(form)
 
 
@@ -176,7 +183,9 @@ class UserLoginView(RedirectURLMixin, FormView):
     template_name = "accounts/sign-in.html"
     form_class = UserLoginForm
 
-    def form_valid(self, form):
+    def form_valid(
+            self, form: UserLoginForm
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         email = form.cleaned_data.get("email")
         password = form.cleaned_data.get("password")
         remember_me = form.cleaned_data.get("remember_me")
@@ -201,7 +210,7 @@ class UserLoginView(RedirectURLMixin, FormView):
 
         return redirect("task_manager:index")
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: UserLoginForm) -> TemplateResponse:
         messages.error(self.request, "Invalid login or password")
         return self.render_to_response(self.get_context_data(form=form))
 
@@ -214,7 +223,9 @@ def logout_view(
 
 
 class ActivateAccountView(View):
-    def get(self, request: HttpRequest, username: str, token: str):
+    def get(
+            self, request: HttpRequest, username: str, token: str
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         user = get_object_or_404(User, username=username)
         token = get_object_or_404(ActivateToken, token=token, user=user)
 
@@ -239,7 +250,7 @@ class CreateProfileView(LoginRequiredMixin, FormView):
     form_class = ProfileForm
     success_url = reverse_lazy("task_manager:index")
 
-    def get_initial(self):
+    def get_initial(self) -> dict:
         initial = super().get_initial()
 
         profile_picture = self.request.session.get("profile_picture")
@@ -248,7 +259,9 @@ class CreateProfileView(LoginRequiredMixin, FormView):
 
         return initial
 
-    def form_valid(self, form):
+    def form_valid(
+            self, form: ProfileForm
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         profile = form.save(commit=False)
         profile.id = self.request.user.id
         profile.user = self.request.user

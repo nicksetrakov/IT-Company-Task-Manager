@@ -26,7 +26,7 @@ class AdminSiteTests(TestCase):
             last_name="last",
         )
 
-    def test_worker_position_listed(self):
+    def test_worker_position_listed(self) -> None:
         """
         Test that worker's position is in list_display
          on worker admin page
@@ -35,7 +35,7 @@ class AdminSiteTests(TestCase):
         res = self.client.get(url)
         self.assertContains(res, self.worker.position)
 
-    def test_worker_detail_position_listed(self):
+    def test_worker_detail_position_listed(self) -> None:
         """
         Test that worker's position is on worker detail admin page
         """
@@ -46,7 +46,7 @@ class AdminSiteTests(TestCase):
         res = self.client.get(url)
         self.assertContains(res, self.worker.position)
 
-    def test_worker_add(self):
+    def test_worker_add(self) -> None:
         url = reverse("admin:accounts_worker_add")
         res = self.client.get(url)
         self.assertContains(res, "id_first_name")

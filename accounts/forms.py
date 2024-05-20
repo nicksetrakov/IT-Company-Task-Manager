@@ -42,7 +42,7 @@ class RegistrationForm(UserCreationForm):
             "position"
         ]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update(
@@ -92,7 +92,7 @@ class UserLoginForm(forms.Form):
         ),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if self.errors.get(field_name):
@@ -106,7 +106,7 @@ class UserLoginForm(forms.Form):
 class DateInputCustom(forms.DateInput):
     input_type = "date"
 
-    def __init__(self, attrs=None, options=None):
+    def __init__(self, attrs=None, options=None) -> None:
         if attrs is None:
             attrs = {}
         if options is None:
@@ -133,7 +133,7 @@ class ProfileForm(forms.ModelForm):
             "info": "Enter some additional information",
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(ProfileForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update(

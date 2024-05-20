@@ -5,7 +5,7 @@ from accounts.models import Position
 
 
 class FormsTests(TestCase):
-    def test_worker_creation_form_with_first_last_name_is_valid(self):
+    def test_worker_creation_form_with_first_last_name_is_valid(self) -> None:
         position = Position.objects.create(name="Developer")
         form_data = {
             "email": "test@gmail.com",
@@ -21,7 +21,7 @@ class FormsTests(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data, form_data)
 
-    def test_worker_creation_form_with_invalid_data(self):
+    def test_worker_creation_form_with_invalid_data(self) -> None:
         position = Position.objects.create(name="Developer")
         form_data = {
             "username": "test_user",
@@ -37,7 +37,7 @@ class FormsTests(TestCase):
 
 
 class WorkerSearchFormTestCase(TestCase):
-    def test_form_worker_valid(self):
+    def test_form_worker_valid(self) -> None:
         data = {"username": "test"}
         form = WorkerSearchForm(data=data)
         self.assertTrue(form.is_valid)

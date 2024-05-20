@@ -10,7 +10,7 @@ SCOPES = [
 ]
 
 
-def get_credentials():
+def get_credentials() -> Credentials | None:
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -27,7 +27,7 @@ def get_credentials():
     return creds
 
 
-def create_google_task(task, creds):
+def create_google_task(task, creds) -> dict:
     service = build("tasks", "v1", credentials=creds)
 
     task_body = {
@@ -43,12 +43,12 @@ def create_google_task(task, creds):
     return created_task
 
 
-def delete_google_task(task_id, creds):
+def delete_google_task(task_id, creds) -> None:
     service = build("tasks", "v1", credentials=creds)
     service.tasks().delete(tasklist="@default", task=task_id).execute()
 
 
-def update_google_task(task_id, updated_task_body, creds):
+def update_google_task(task_id, updated_task_body, creds) -> dict:
     service = build("tasks", "v1", credentials=creds)
     updated_task = (
         service.tasks()

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpResponse,
-    HttpRequest,
+    HttpRequest, HttpResponsePermanentRedirect, HttpResponseRedirect,
 )
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -110,7 +110,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = "task_manager/task_form.html"
     success_url = reverse_lazy("task_manager:task-list")
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         response = super().form_valid(form)
         task = self.object
 
@@ -136,7 +136,7 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
             "task_manager:task-detail", kwargs={"pk": self.object.pk}
         )
 
-    def form_valid(self, form):
+    def form_valid(self, form: TaskForm) -> HttpResponse:
         response = super().form_valid(form)
         task = self.object
 
@@ -178,7 +178,9 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 class TaskCompleteView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
+    def post(
+            self, request, *args, **kwargs
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         task = get_object_or_404(Task, pk=self.kwargs["pk"])
 
         creds = get_credentials()
@@ -211,7 +213,7 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = "task_manager/task_confirm_delete.html"
     success_url = reverse_lazy("task_manager:task-list")
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs) -> HttpResponseRedirect:
         task = self.get_object()
         creds = get_credentials()
 
@@ -264,7 +266,9 @@ class TagDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 class ToggleAssignToTaskView(LoginRequiredMixin, View):
-    def get(self, request, *args, **kwargs):
+    def get(
+            self, request, *args, **kwargs
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         worker = request.user
         task = get_object_or_404(Task, pk=self.kwargs["pk"])
 

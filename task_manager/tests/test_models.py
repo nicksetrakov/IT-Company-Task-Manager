@@ -9,11 +9,11 @@ from task_manager.models import Task, TaskType, Tag, Priority
 
 class ModelsTests(TestCase):
 
-    def test_task_type_str(self):
+    def test_task_type_str(self) -> None:
         task_type = TaskType.objects.create(name="test")
         self.assertEquals(str(task_type), task_type.name)
 
-    def test_task_str(self):
+    def test_task_str(self) -> None:
         task_type = TaskType.objects.create(name="test")
         task = Task.objects.create(
             name="Test Task",
@@ -26,7 +26,7 @@ class ModelsTests(TestCase):
         self.assertEquals(str(task), f"{task.name}"
                                      f" {task.deadline} {task.priority}")
 
-    def test_task_clean_deadline_in_past(self):
+    def test_task_clean_deadline_in_past(self) -> None:
         task = Task(
             name="Test Task",
             description="Test Description",
@@ -38,6 +38,6 @@ class ModelsTests(TestCase):
         with self.assertRaises(ValidationError):
             task.full_clean()
 
-    def test_tag_str(self):
+    def test_tag_str(self) -> None:
         tag = Tag.objects.create(name="test")
         self.assertEquals(str(tag), f"{tag.name}")

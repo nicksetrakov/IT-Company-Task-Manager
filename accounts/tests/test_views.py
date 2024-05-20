@@ -9,7 +9,7 @@ WORKER_URL = reverse("accounts:worker-list")
 
 
 class BaseTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.position = Position.objects.create(name="test_position")
         self.user = get_user_model().objects.create_user(
             email="test@gmail.com",
@@ -26,13 +26,13 @@ class BaseTestCase(TestCase):
 
 
 class PublicPositionTest(TestCase):
-    def test_login_required(self):
+    def test_login_required(self) -> None:
         res = self.client.get(POSITION_URL)
         self.assertNotEqual(res.status_code, 200)
 
 
 class PrivatePositionTest(BaseTestCase):
-    def test_retrieve_position(self):
+    def test_retrieve_position(self) -> None:
         Position.objects.create(name="test")
         res = self.client.get(POSITION_URL)
         self.assertEqual(res.status_code, 200)
@@ -42,13 +42,13 @@ class PrivatePositionTest(BaseTestCase):
 
 
 class PublicWorkerTest(TestCase):
-    def test_login_required(self):
+    def test_login_required(self) -> None:
         res = self.client.get(WORKER_URL)
         self.assertNotEqual(res.status_code, 200)
 
 
 class PrivateWorkerTest(BaseTestCase):
-    def test_retrieve_worker(self):
+    def test_retrieve_worker(self) -> None:
         res = self.client.get(WORKER_URL)
         self.assertEqual(res.status_code, 200)
         workers = Worker.objects.all()

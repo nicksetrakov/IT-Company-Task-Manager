@@ -21,7 +21,7 @@ def validate_name(name: str):
         raise ValidationError(f"{name} contains non-english letters")
 
 
-def validate_birth_date(birth_date):
+def validate_birth_date(birth_date) -> None:
     if birth_date.year < 1900:
         raise ValidationError(
             "Invalid birth date - year must be greater than 1900."

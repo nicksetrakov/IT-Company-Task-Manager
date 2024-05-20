@@ -13,7 +13,7 @@ TAG_URL = reverse("task_manager:tag-list")
 
 
 class BaseTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.position = Position.objects.create(name="test_position")
         self.user = get_user_model().objects.create_user(
             email="test@gmail.com",
@@ -30,13 +30,13 @@ class BaseTestCase(TestCase):
 
 
 class PublicTaskTest(TestCase):
-    def test_login_required(self):
+    def test_login_required(self) -> None:
         res = self.client.get(TASK_URL)
         self.assertNotEqual(res.status_code, 200)
 
 
 class PrivateTaskTest(BaseTestCase):
-    def test_retrieve_task(self):
+    def test_retrieve_task(self) -> None:
         task_type = TaskType.objects.create(name="Bug")
         task = Task.objects.create(
             name="Test Task",
@@ -56,13 +56,13 @@ class PrivateTaskTest(BaseTestCase):
 
 
 class PublicTagTest(TestCase):
-    def test_login_required(self):
+    def test_login_required(self) -> None:
         res = self.client.get(TAG_URL)
         self.assertNotEquals(res.status_code, 200)
 
 
 class PrivateTagTest(BaseTestCase):
-    def test_retrieve_position(self):
+    def test_retrieve_position(self) -> None:
         Tag.objects.create(name="test")
         res = self.client.get(TAG_URL)
         self.assertEqual(res.status_code, 200)

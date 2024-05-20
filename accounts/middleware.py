@@ -1,12 +1,15 @@
+from django.http import HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
 
 class ProfileCompletionMiddleware:
-    def __init__(self, get_response):
+    def __init__(self, get_response) -> None:
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(
+            self, request
+    ) -> HttpResponsePermanentRedirect | HttpResponseRedirect:
         create_profile_url = reverse("accounts:profile-create")
         logout_url = reverse("accounts:logout")
         admin_base_url = "/admin/"

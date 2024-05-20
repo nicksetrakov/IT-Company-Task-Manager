@@ -4,7 +4,9 @@ from social_core.pipeline.user import USER_FIELDS
 User = get_user_model()
 
 
-def create_user(strategy, details, backend, user=None, *args, **kwargs):
+def create_user(
+        strategy, details, backend, user=None, *args, **kwargs
+) -> dict[str, bool] | None:
     if user:
         return {"is_new": False}
 
