@@ -21,9 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY", "django-insecure-9*g=zskry)8f96-j2$$1kwd@yn97=#%^yx11nf#_z%101!n@2s"
-)
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
@@ -155,7 +153,12 @@ STATIC_URL = "static/"
 
 STATICFILES_DIRS = (BASE_DIR / "static",)
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+if not DEBUG:
+    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
