@@ -1,5 +1,6 @@
 asgiref==3.7.2
 beautiful-date==2.3.0
+black==24.4.2
 cachetools==5.3.3
 certifi==2024.2.2
 cffi==1.16.0
@@ -9,6 +10,7 @@ colorama==0.4.6
 crispy-bootstrap4==2023.1
 cryptography==42.0.7
 defusedxml==0.8.0rc2
+dj-database-url==2.1.0
 Django==4.2
 django-crispy-forms==2.1
 django-debug-toolbar==3.2.4
@@ -35,6 +37,7 @@ pep8-naming==0.13.2
 platformdirs==4.2.0
 proto-plus==1.23.0
 protobuf==4.25.3
+psycopg2==2.9.9
 pyasn1==0.6.0
 pyasn1_modules==0.4.0
 pycodestyle==2.9.1
@@ -54,8 +57,10 @@ six==1.16.0
 social-auth-app-django==5.4.1
 social-auth-core==4.5.4
 sqlparse==0.4.4
+typing_extensions==4.11.0
 tzdata==2024.1
 tzlocal==4.3.1
 uritemplate==4.1.1
 urllib3==2.2.1
 Werkzeug==3.0.3
+whitenoise==6.6.0

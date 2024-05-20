@@ -1,7 +1,4 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import BaseUserManager
-
-User = get_user_model()
+from django.contrib.auth.models import BaseUserManager, User
 
 
 class CustomUserManager(BaseUserManager):
