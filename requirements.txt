@@ -25,6 +25,8 @@ google-auth==2.29.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.0
 googleapis-common-protos==1.63.0
+gunicorn==22.0.0
+h11==0.14.0
 httplib2==0.22.0
 idna==3.7
 MarkupSafe==2.1.5
@@ -62,5 +64,6 @@ tzdata==2024.1
 tzlocal==4.3.1
 uritemplate==4.1.1
 urllib3==2.2.1
+uvicorn==0.29.0
 Werkzeug==3.0.3
 whitenoise==6.6.0
