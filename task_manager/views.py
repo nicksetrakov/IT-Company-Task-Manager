@@ -28,7 +28,6 @@ class IndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         num_workers = get_user_model().objects.count()
         num_tasks = Task.objects.count()
-        print(num_tasks)
 
         num_visits = request.session.get("num_visits", 0)
         request.session["num_visits"] = num_visits + 1
