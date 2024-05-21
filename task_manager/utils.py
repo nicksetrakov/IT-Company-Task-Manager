@@ -7,8 +7,6 @@ from google_auth_oauthlib import get_user_credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-from task_manager_service.settings import SOCIAL_AUTH_GOOGLE_OAUTH2_KEY, SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET, \
-    API_AUTH_GOOGLE_OAUTH2_KEY, API_AUTH_GOOGLE_OAUTH2_SECRET
 
 SCOPES = [
     "https://www.googleapis.com/auth/calendar",
