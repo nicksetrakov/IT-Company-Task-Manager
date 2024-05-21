@@ -2,7 +2,7 @@
 Task Manager, which will handle all possible problems during product development in team.
 
 ## Check it out
-
+[Task Manager project deployed to Render](https://it-company-task-manager-8aez.onrender.com/)
 ## Installation
 Python3 must be already installed
 
