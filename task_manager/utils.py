@@ -27,11 +27,7 @@ def get_credentials() -> Credentials | None:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "credentials.json", SCOPES
             )
-            creds = get_user_credentials(
-                scopes=SCOPES,
-                client_id=API_AUTH_GOOGLE_OAUTH2_KEY,
-                client_secret=API_AUTH_GOOGLE_OAUTH2_SECRET,
-            )
+            creds = flow.run_local_server(port=0)
         with open("token.json", "w") as token:
             token.write(creds.to_json())
     return creds
