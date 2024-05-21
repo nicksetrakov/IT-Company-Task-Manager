@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import Worker, Position, ActivateToken
@@ -10,7 +9,9 @@ from django.utils.translation import gettext_lazy as _
 class WorkerAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "username", "position")}),
+        (_("Personal info"), {"fields": (
+            "first_name", "last_name", "username", "position")}
+         ),
         (
             _("Permissions"),
             {
@@ -34,7 +35,9 @@ class WorkerAdmin(UserAdmin):
             },
         ),
     )
-    list_display = ("username", "email", "first_name", "last_name", "is_staff", "position")
+    list_display = (
+        "username", "email", "first_name", "last_name", "is_staff", "position"
+    )
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
     search_fields = ("username", "first_name", "last_name", "email")
     ordering = ("username",)
@@ -46,8 +49,8 @@ class WorkerAdmin(UserAdmin):
 
 @admin.register(ActivateToken)
 class ActivateTokenAdmin(admin.ModelAdmin):
-    list_display = ('user', 'token', 'create_at')
-    search_fields = ('user', 'token')
+    list_display = ("user", "token", "create_at")
+    search_fields = ("user", "token")
 
 
 admin.site.register(Position)
