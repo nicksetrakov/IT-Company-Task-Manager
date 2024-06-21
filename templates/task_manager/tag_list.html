@@ -1,0 +1,50 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Tags</h1>
+    <a href="{% url 'task_manager:tag-create' %}" class="btn btn-primary btn-lg link-to-page">Create Tag</a>
+  </div>
+  {% include "includes/search_form.html" %}
+  <div class="card">
+    <div class="table-responsive">
+      {% if tag_list %}
+      <table class="table align-items-center mb-0">
+        <thead>
+          <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tag name</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for tag in tag_list %}
+          <tr>
+            <td>
+              <div class="d-flex px-2">
+                <div class="my-auto">
+                  <h6 class="mb-0 text-xs">#{{ tag }}</h6>
+                </div>
+              </div>
+            </td>
+            <td>
+              <a href="{% url 'task_manager:tag-update' pk=tag.id %}">
+                <button type="button" class="btn bg-gradient-secondary">Update</button>
+              </a>
+            </td>
+            <td>
+              <a
+                href="{% url 'task_manager:tag-delete' pk=tag.id %}">
+                <button type="button" class="btn bg-gradient-danger">Delete</button>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+
+        </tbody>
+      </table>
+      {% else %}
+        <p>There are no tags in the service.</p>
+      {% endif %}
+    </div>
+    </div>
+{% endblock %}

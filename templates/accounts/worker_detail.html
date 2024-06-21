@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+  <section class="py-sm-7 py-5 position-relative">
+<div class="container">
+<div class="row">
+<div class="col-12 mx-auto">
+<div class="row py-lg-7 py-5">
+<div class="col-lg-3 col-md-5 position-relative my-auto">
+<img class="img border-radius-lg max-width-200 w-100 position-relative z-index-2" src="{{ profile.avatar }}" alt="{{ user.username }}">
+</div>
+<div class="col-lg-7 col-md-7 z-index-2 position-relative px-md-2 px-sm-5 mt-sm-0 mt-4">
+<div class="d-flex justify-content-between align-items-center mb-2">
+<h4 class="mb-0">{{ user.first_name }} {{ user.last_name }}</h4>
+</div>
+<p class="text-lg mb-0">
+  {{ profile.info }}
+</p>
+  <br>
+  <p><strong>Username:</strong> {{ user.username }}</p>
+  <p><strong>Birthday:</strong> {{ profile.date_of_birth }}</p>
+  <p><strong>Gender:</strong> {{ profile.get_gender_display }}</p>
+  <p>
+    <strong>Position:</strong> {{ user.position }}
+    <br>
+    <a href="{% url 'accounts:worker-update' pk=user.id %}" class="btn btn-secondary link-to-page">
+      Update Position
+    </a>
+  </p>
+  <p><strong>Is staff:</strong> {{ user.is_staff }}</p>
+    <div class="ml-3">
+    <h4>Tasks</h4>
+        <hr>
+    {% if completed or not_completed %}
+        <p>
+          <strong>Completed:</strong>
+          {{ completed|join:", " }}
+        </p>
+        <p>
+          <strong>Not Completed:</strong>
+          {{ not_completed|join:", " }}
+        </p>
+
+    {% else %}
+      <p>No task for this worker</p>
+    {% endif %}
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endblock %}
